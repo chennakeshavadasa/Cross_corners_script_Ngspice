@@ -1,5 +1,6 @@
 import os
-# import subprocess
+from pathlib import Path
+import subprocess
 
 TEMPLATE_SPICE_FILE = "test_case_sim.spice"
 CORNERS_DATA = [
@@ -28,47 +29,54 @@ def main():
     # extract template filename without extension
     filename = os.path.splitext(os.path.basename(TEMPLATE_SPICE_FILE))[0]
 
-    # create folders raw, csv, txt, logs, spice
-    if not os.path.exists("raw"):
-        os.makedirs("raw")
-    if not os.path.exists("csv"):
-        os.makedirs("csv")
-    if not os.path.exists("txt"):
-        os.makedirs("txt")
-    if not os.path.exists("logs"):
-        os.makedirs("logs")
-    if not os.path.exists("spice"):
-        os.makedirs("spice")
-
     # read the template
     with open(TEMPLATE_SPICE_FILE, "r") as f:
-        template_file_data = f.read()
+        template_file_data_lines = f.readlines()
+
+    # extract output directory
+    sch_path = template_file_data_lines[0].split("sch_path: ")[1]
+    output_dir = Path(sch_path).parent
+
+    # join lines
+    template_file_data = "".join(template_file_data_lines)
+
+    # create folders raw, csv, txt, logs, spice
+    if not os.path.exists(Path(output_dir, "raw")):
+        os.makedirs(Path(output_dir, "raw"))
+    if not os.path.exists(Path(output_dir, "csv")):
+        os.makedirs(Path(output_dir, "csv"))
+    if not os.path.exists(Path(output_dir, "txt")):
+        os.makedirs(Path(output_dir, "txt"))
+    if not os.path.exists(Path(output_dir, "logs")):
+        os.makedirs(Path(output_dir, "logs"))
+    if not os.path.exists(Path(output_dir, "spice")):
+        os.makedirs(Path(output_dir, "spice"))
 
     # create spice files for all corners using template
     for corner in CORNERS_DATA:
         new_filename = f"{filename}_{corner}"
-        spice_file_name = f"spice/{new_filename}.spice"
-        with open(spice_file_name, "w") as f:
+        spice_file_path = Path(output_dir, "spice", f"{new_filename}.spice")
+        with open(spice_file_path, "w") as f:
             # replace corner
             new_data = template_file_data.replace("tt", corner)
 
             # replace filename
             new_data = new_data.replace(filename, new_filename)
+            # replace paths
             new_data = new_data.replace(
-                f"{new_filename}.raw", f"raw/{new_filename}.raw"
+                f"{new_filename}.raw", Path(output_dir, "raw", f"{new_filename}.raw").resolve().as_posix()
             )
             new_data = new_data.replace(
-                f"{new_filename}.csv", f"csv/{new_filename}.csv"
+                f"{new_filename}.csv", Path(output_dir, "csv", f"{new_filename}.csv").resolve().as_posix()
             )
             new_data = new_data.replace(
-                f"{new_filename}.txt", f"txt/{new_filename}.txt"
+                f"{new_filename}.txt", Path(output_dir, "txt", f"{new_filename}.txt").resolve().as_posix()
             )
             f.write(new_data)
 
         # run ngspice
-        # subprocess.run(["ngspice", "-b", spice_file_name], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        # exit ngspice
-        # subprocess.run(["exit"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        with open(Path(output_dir, "logs", f"{new_filename}.log"), "w") as f:
+            subprocess.run(["ngspice", "-b", spice_file_path], stdout=f, stderr=f)
 
 
 if __name__ == "__main__":
