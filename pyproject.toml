@@ -4,10 +4,14 @@ version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
-dependencies = []
+dependencies = [
+    "colorama>=0.4.6",
+    "tqdm>=4.67.1",
+]
 
 [dependency-groups]
 dev = [
     "isort>=7.0.0",
+    "pytest>=9.0.1",
     "ruff>=0.14.8",
 ]
