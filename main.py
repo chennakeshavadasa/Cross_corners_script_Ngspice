@@ -24,7 +24,8 @@ CORNERS_DATA = [
 
 
 def main():
-    print("Hello from cross-corners-script-ngspice!")
+    print("Hello from cross-corners-script-ngspice!
+    Please run this script once your tt simulation works properly")
 
     # extract template filename without extension
     filename = os.path.splitext(os.path.basename(TEMPLATE_SPICE_FILE))[0]
