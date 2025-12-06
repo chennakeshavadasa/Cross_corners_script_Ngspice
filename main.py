@@ -49,7 +49,11 @@ def main():
         new_filename = f"{filename}_{corner}"
         spice_file_name = f"spice/{new_filename}.spice"
         with open(spice_file_name, "w") as f:
-            new_data = template_file_data.replace(filename, new_filename)
+            # replace corner
+            new_data = template_file_data.replace("tt", corner)
+
+            # replace filename
+            new_data = new_data.replace(filename, new_filename)
             new_data = new_data.replace(
                 f"{new_filename}.raw", f"raw/{new_filename}.raw"
             )
