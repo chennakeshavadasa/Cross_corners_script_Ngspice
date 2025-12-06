@@ -1,0 +1,22 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# Cache files
+.ruff_cache
+
+# Non code folders/files
+csv
+logs
+raw
+spice
+txt
+
+*.spice
