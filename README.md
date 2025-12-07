@@ -1,4 +1,4 @@
-# Cross Corner Simulation Scripts for NGSpice
+# Cross Corner Simulation Scripts for Ngspice
 
 This is an attempt to make a single go Cross corner simulation script for NGSpice and open source tools
 
